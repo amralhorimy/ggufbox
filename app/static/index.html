@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GGUFBox</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">GGUF<span>Box</span></div>
+  <nav class="nav" id="nav">
+    <button data-view="chat" class="on" data-i="nav_chat"></button>
+    <button data-view="models" data-i="nav_models"></button>
+    <button data-view="presets" data-i="nav_presets"></button>
+    <button data-view="apis" data-i="nav_apis"></button>
+  </nav>
+  <div class="meter" id="meter" title="">
+    <div class="meter-label" id="meterLabel"></div>
+    <div class="meter-bar"><i class="m-model" id="mModel"></i><i class="m-other" id="mOther"></i></div>
+  </div>
+  <button class="ghost" id="langBtn">العربية</button>
+</header>
+
+<main>
+  <section class="view chat on" id="view-chat">
+    <aside class="chatlist">
+      <button class="primary wide" id="newChat" data-i="new_chat"></button>
+      <ul id="chats"></ul>
+    </aside>
+    <div class="convo">
+      <div class="convo-head" id="convoHead">
+        <h1 id="chatTitle"></h1>
+        <div class="actions">
+          <button class="ghost" id="sumBtn" data-i="summarize"></button>
+          <select id="exportSel" class="ghost"><option value="" data-i="export"></option><option value="md">Markdown</option><option value="json">JSON</option><option value="txt">Text</option></select>
+          <button class="ghost danger" id="delBtn" data-i="delete"></button>
+        </div>
+      </div>
+      <details class="sys" id="sysBox"><summary data-i="sys_prompt"></summary>
+        <textarea id="sysText" rows="3"></textarea>
+        <button class="ghost" id="sysSave" data-i="save"></button>
+      </details>
+      <div class="summary" id="summaryBox" hidden></div>
+      <div class="banner" id="noModel" hidden><span data-i="no_model"></span> <button class="link" data-goto="models" data-i="open_models"></button></div>
+      <div class="msgs" id="msgs"></div>
+      <div class="composer">
+        <div class="chips" id="chips"></div>
+        <textarea id="input" rows="2" data-ph="placeholder"></textarea>
+        <div class="row">
+          <label class="ghost attach"><input type="file" id="file" hidden><span data-i="attach"></span></label>
+          <label class="check"><input type="checkbox" id="think"><span data-i="thinking"></span></label>
+          <button class="ghost" id="regen" data-i="regenerate" hidden></button>
+          <span class="grow"></span>
+          <button class="primary" id="sendBtn" data-i="send"></button>
+          <button class="primary stop" id="stopBtn" data-i="stop" hidden></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view page" id="view-models">
+    <h1 data-i="nav_models"></h1>
+    <p class="lead" data-i="models_lead"></p>
+    <div class="cards" id="modelCards"></div>
+  </section>
+
+  <section class="view page" id="view-presets">
+    <h1 data-i="nav_presets"></h1>
+    <p class="lead" data-i="presets_lead"></p>
+    <div class="split">
+      <ul class="list" id="presetList"></ul>
+      <form class="panel" id="presetForm"></form>
+    </div>
+  </section>
+
+  <section class="view page" id="view-apis">
+    <h1 data-i="nav_apis"></h1>
+    <p class="lead" data-i="apis_lead"></p>
+    <div class="split">
+      <ul class="list" id="apiList"></ul>
+      <div>
+        <form class="panel" id="apiForm"></form>
+        <div class="panel" id="apiTest" hidden></div>
+      </div>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+<script src="/app.js"></script>
+</body>
+</html>

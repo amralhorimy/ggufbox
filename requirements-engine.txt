@@ -1,0 +1,2 @@
+# The real inference engine. Skip it to try the app with GGUFBOX_ENGINE=mock.
+llama-cpp-python>=0.3.38

@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use GGUFBox in research or other work, please cite this software."
+title: "GGUFBox"
+type: software
+authors:
+  - family-names: "Alhorimy"
+    given-names: "Amr"
+version: "0.1.0"
+license: "MIT"

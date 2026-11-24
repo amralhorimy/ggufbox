@@ -1,0 +1,23 @@
+services:
+  ggufbox:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/models:ro      # drop your .gguf files here
+      - ggufbox-data:/data       # chats, presets, uploads
+    environment:
+      GGUFBOX_API_KEY: ${GGUFBOX_API_KEY:-}
+      GGUFBOX_IDLE_UNLOAD_SECONDS: ${GGUFBOX_IDLE_UNLOAD_SECONDS:-0}
+    # Hard resource limits protect the host. GGUFBox reads the memory limit and
+    # refuses loads that would not fit inside it.
+    mem_limit: ${GGUFBOX_MEM_LIMIT:-8g}
+    cpus: ${GGUFBOX_CPUS:-4}
+    restart: unless-stopped
+    # NVIDIA GPU (after building with LLAMA_CMAKE_ARGS="-DGGML_CUDA=on"):
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices: [{ driver: nvidia, count: all, capabilities: [gpu] }]
+volumes:
+  ggufbox-data:

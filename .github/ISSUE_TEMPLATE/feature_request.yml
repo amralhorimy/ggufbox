@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest a focused improvement to GGUFBox.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: Please search existing issues and discussions first.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to accomplish, and what currently gets in the way?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false

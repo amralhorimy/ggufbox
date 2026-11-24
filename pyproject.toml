@@ -1,0 +1,24 @@
+[project]
+name = "ggufbox"
+version = "0.1.0"
+description = "Self-hosted GGUF inference server with a bilingual web UI, OpenAI-compatible API, and vision support."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Amr Alhorimy" }]
+keywords = ["GGUF", "llama.cpp", "local AI", "self-hosted", "FastAPI", "vision", "OpenAI-compatible"]
+classifiers = [
+  "Environment :: Web Environment",
+  "Framework :: FastAPI",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
