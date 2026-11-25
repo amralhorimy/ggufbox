@@ -10,17 +10,61 @@
 
 <p><code>Python 3.11+</code> · <code>FastAPI</code> · <code>llama.cpp</code> · <code>MIT</code></p>
 
-<p><a href="#quick-start">Quick start</a> · <a href="#features">Features</a> · <a href="#using-it">API examples</a> · <a href="CONTRIBUTING.md">Contributing</a> · <a href="SECURITY.md">Security</a></p>
+<p><a href="#quick-start">Quick start</a> · <a href="#features">Features</a> · <a href="#openai-sdk">OpenAI SDK</a> · <a href="#using-it">API examples</a> · <a href="CONTRIBUTING.md">Contributing</a> · <a href="SECURITY.md">Security</a></p>
 
 <br>
 
-<img src="docs/screenshots/chat.png" alt="GGUFBox running a real local vision model in the chat interface" width="94%">
+<img src="docs/screenshots/demo-flow.gif" alt="Real GGUFBox workflow: load a local model, chat with it, and call a Virtual API" width="96%">
 
-<p><sub>Live local inference with SmolVLM-500M — the vision path was tested end to end.</sub></p>
+<p><sub>Real UI recording: model management and load → streamed vision chat → a successful Virtual API call.</sub></p>
+
+<div align="center">
+  <img src="docs/screenshots/models.png" alt="Manage and load a local GGUF model" width="32%">
+  <img src="docs/screenshots/chat-streaming.png" alt="Real streamed response from the local vision model" width="32%">
+  <img src="docs/screenshots/load-settings.png" alt="Model load settings and estimated RAM budget" width="32%">
+</div>
+
+<p><sub>Model management · live chat · memory and loading controls</sub></p>
+
+<img src="docs/screenshots/apis.png" alt="Create a Virtual API and inspect its successful JSON response" width="88%">
+
+<p><sub>Create a prompt-backed endpoint and test its structured JSON output in the UI.</sub></p>
 
 </div>
 
 GGUFBox is a self-hosted FastAPI service that keeps model execution local, loads one GGUF model at a time, and helps protect available RAM. Chats are stored independently of the model, so you can switch models without losing conversation history.
+
+## OpenAI SDK
+
+Use the official Python SDK against GGUFBox's local OpenAI-compatible endpoint. This tested example streams a vision response from the bundled [`docs/vision-test.png`](docs/vision-test.png). Load a model first; if `GGUFBOX_API_KEY` is enabled, replace `local` with that key.
+
+```bash
+pip install openai
+```
+
+```python
+import base64
+from pathlib import Path
+from openai import OpenAI
+
+client = OpenAI(base_url="http://localhost:8000/v1", api_key="local")
+image = base64.b64encode(Path("docs/vision-test.png").read_bytes()).decode("ascii")
+stream = client.chat.completions.create(
+    model="current",
+    stream=True,
+    max_tokens=32,
+    messages=[{"role": "user", "content": [
+        {"type": "text", "text": "What color is the object? Answer with one color only."},
+        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{image}"}},
+    ]}],
+)
+for chunk in stream:
+    text = chunk.choices[0].delta.content or ""
+    if text:
+        print(text, end="", flush=True)
+```
+
+The real local run returned `Blue`. Existing OpenAI Python SDK clients work without a proxy or cloud inference service.
 
 ## Features
 
@@ -43,10 +87,9 @@ GGUFBox is a self-hosted FastAPI service that keeps model execution local, loads
 ### More screenshots
 
 <div align="center">
-  <img src="docs/screenshots/models.png" alt="GGUFBox model management interface" width="48%">
   <img src="docs/screenshots/presets.png" alt="GGUFBox preset settings interface" width="48%">
-  <img src="docs/screenshots/apis.png" alt="GGUFBox virtual API interface" width="48%">
   <img src="docs/screenshots/chat-ar.png" alt="GGUFBox Arabic RTL chat interface" width="48%">
+  <img src="docs/screenshots/chat.png" alt="GGUFBox local vision chat" width="48%">
 </div>
 
 ### Verified vision demo model

@@ -282,7 +282,7 @@ async function estimate(card) {
   try {
     const e = await api(`/api/models/estimate?filename=${encodeURIComponent(card.dataset.file)}&n_ctx=${p.n_ctx}&n_gpu_layers=${p.n_gpu_layers}`);
     const el = $('[data-est]', box); el.className = 'est' + (e.fits ? '' : ' bad');
-    el.textContent = `${t('est')}: ${fmtGB(e.total_bytes)} ${t('of')} ${fmtGB(e.budget_bytes)} ${t('budget')}`;
+    el.textContent = `${t('est')}: ${fmtGB(e.estimated_bytes)} ${t('of')} ${fmtGB(e.budget_bytes)} ${t('budget')}`;
     $('[data-force]', box).hidden = e.fits;
   } catch {}
 }

@@ -10,17 +10,61 @@
 
 <p><code>Python 3.11+</code> · <code>FastAPI</code> · <code>llama.cpp</code> · <code>MIT</code></p>
 
-<p><a href="CONTRIBUTING.md">المساهمة</a> · <a href="SECURITY.md">الأمان</a> · <a href="models/SOURCE.md">المصدر والترخيص</a></p>
+<p><a href="#openai-sdk">مثال OpenAI SDK</a> · <a href="CONTRIBUTING.md">المساهمة</a> · <a href="SECURITY.md">الأمان</a> · <a href="models/SOURCE.md">المصدر والترخيص</a></p>
 
 <br>
 
-<img src="docs/screenshots/chat-ar.png" alt="واجهة GGUFBox العربية باتجاه RTL" width="94%">
+<img src="docs/screenshots/demo-flow.gif" alt="تدفق حقيقي في GGUFBox: تحميل نموذج محلي ثم محادثة واستدعاء واجهة API افتراضية" width="96%">
 
-<p><sub>لقطة حقيقية لمسار الرؤية المحلي باستخدام SmolVLM-500M.</sub></p>
+<p><sub>تسجيل حقيقي للواجهة: إدارة النموذج وتحميله ← محادثة رؤية ببث مباشر ← استدعاء ناجح لواجهة API افتراضية.</sub></p>
+
+<div align="center">
+  <img src="docs/screenshots/models.png" alt="إدارة نموذج GGUF محلي وتحميله" width="32%">
+  <img src="docs/screenshots/chat-streaming.png" alt="إجابة حقيقية ببث مباشر من نموذج الرؤية المحلي" width="32%">
+  <img src="docs/screenshots/load-settings.png" alt="إعدادات التحميل وتقدير ميزانية الذاكرة" width="32%">
+</div>
+
+<p><sub>إدارة النماذج · المحادثة المباشرة · إعدادات الذاكرة والتحميل</sub></p>
+
+<img src="docs/screenshots/apis.png" alt="إنشاء واجهة API افتراضية وفحص استجابة JSON ناجحة" width="88%">
+
+<p><sub>أنشئ نقطة نهاية مبنية على تعليماتك واختبر مخرجات JSON المنظمة من الواجهة.</sub></p>
 
 </div>
 
 GGUFBox خدمة FastAPI ذاتية الاستضافة تُبقي تشغيل النموذج محليًا، وتحمل نموذج GGUF واحدًا في كل مرة مع أدوات للمساعدة في حماية الذاكرة المتاحة. تُحفظ المحادثات مستقلّة عن النموذج، لذلك يمكنك التبديل بين النماذج دون فقدان سجلّك.
+
+## OpenAI SDK
+
+استخدم مكتبة Python الرسمية مع نقطة النهاية المحلية المتوافقة مع OpenAI. المثال التالي يرسل صورة الاختبار [`docs/vision-test.png`](docs/vision-test.png) ويطبع الإجابة أثناء وصولها. حمّل نموذجًا أولًا؛ وإذا فعّلت `GGUFBOX_API_KEY` فاستبدل `local` بالمفتاح.
+
+```bash
+pip install openai
+```
+
+```python
+import base64
+from pathlib import Path
+from openai import OpenAI
+
+client = OpenAI(base_url="http://localhost:8000/v1", api_key="local")
+image = base64.b64encode(Path("docs/vision-test.png").read_bytes()).decode("ascii")
+stream = client.chat.completions.create(
+    model="current",
+    stream=True,
+    max_tokens=32,
+    messages=[{"role": "user", "content": [
+        {"type": "text", "text": "What color is the object? Answer with one color only."},
+        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{image}"}},
+    ]}],
+)
+for chunk in stream:
+    text = chunk.choices[0].delta.content or ""
+    if text:
+        print(text, end="", flush=True)
+```
+
+أعاد الاختبار الفعلي محليًا `Blue`. تعمل مكتبات OpenAI الحالية دون وسيط أو تشغيل للاستدلال في السحابة.
 
 ## المزايا
 
@@ -44,9 +88,8 @@ GGUFBox خدمة FastAPI ذاتية الاستضافة تُبقي تشغيل ا�
 
 <div align="center">
   <img src="docs/screenshots/chat.png" alt="واجهة محادثة GGUFBox" width="48%">
-  <img src="docs/screenshots/models.png" alt="إدارة النماذج في GGUFBox" width="48%">
   <img src="docs/screenshots/presets.png" alt="إعدادات النماذج المسبقة في GGUFBox" width="48%">
-  <img src="docs/screenshots/apis.png" alt="واجهة API الافتراضية في GGUFBox" width="48%">
+  <img src="docs/screenshots/chat-ar.png" alt="واجهة GGUFBox العربية باتجاه RTL" width="48%">
 </div>
 
 ## نموذج رؤية مجرّب
